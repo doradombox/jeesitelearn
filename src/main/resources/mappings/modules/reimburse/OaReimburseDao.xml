@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reimburse.dao.OaReimburseDao">
+    
+	<sql id="oaReimburseColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.month AS "month",
+		a.reimburse_date AS "reimburseDate",
+		a.reimburse_type AS "reimburseType",
+		a.business_days AS "businessDays",
+		a.travel_allowance AS "travelAllowance",
+		a.jtfyzh AS "jtfyzh",
+		a.zsfyzh AS "zsfyzh",
+		a.cfzh AS "cfzh",
+		a.zdfzh AS "zdfzh",
+		a.zlfzh AS "zlfzh",
+		a.flfzh AS "flfzh",
+		a.tbfzh AS "tbfzh",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.bgypzh AS "bgypzh",
+		a.qtzh AS "qtzh",
+		a.bxzh AS "bxzh",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="oaReimburseJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="OaReimburse">
+		SELECT 
+			<include refid="oaReimburseColumns"/>
+		FROM oa_reimburse a
+		<include refid="oaReimburseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaReimburse">
+		SELECT 
+			<include refid="oaReimburseColumns"/>
+		FROM oa_reimburse a
+		<include refid="oaReimburseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="businessDays != null and businessDays != ''">
+				AND a.business_days = #{businessDays}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaReimburse">
+		SELECT 
+			<include refid="oaReimburseColumns"/>
+		FROM oa_reimburse a
+		<include refid="oaReimburseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_reimburse(
+			id,
+			user_id,
+			month,
+			reimburse_date,
+			reimburse_type,
+			business_days,
+			travel_allowance,
+			jtfyzh,
+			zsfyzh,
+			cfzh,
+			zdfzh,
+			zlfzh,
+			flfzh,
+			tbfzh,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			bgypzh,
+			qtzh,
+			bxzh
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{month},
+			#{reimburseDate},
+			#{reimburseType},
+			#{businessDays},
+			#{travelAllowance},
+			#{jtfyzh},
+			#{zsfyzh},
+			#{cfzh},
+			#{zdfzh},
+			#{zlfzh},
+			#{flfzh},
+			#{tbfzh},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{bgypzh},
+			#{qtzh},
+			#{bxzh}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_reimburse SET 	
+			user_id = #{user.id},
+			month = #{month},
+			reimburse_date = #{reimburseDate},
+			reimburse_type = #{reimburseType},
+			business_days = #{businessDays},
+			travel_allowance = #{travelAllowance},
+			jtfyzh = #{jtfyzh},
+			zsfyzh = #{zsfyzh},
+			cfzh = #{cfzh},
+			zdfzh = #{zdfzh},
+			zlfzh = #{zlfzh},
+			flfzh = #{flfzh},
+			tbfzh = #{tbfzh},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			bgypzh = #{bgypzh},
+			qtzh = #{qtzh},
+			bxzh = #{bxzh}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_reimburse SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

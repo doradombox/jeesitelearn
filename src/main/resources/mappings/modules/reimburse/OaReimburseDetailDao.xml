@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.reimburse.dao.OaReimburseDetailDao">
+    
+	<sql id="oaReimburseDetailColumns">
+		a.id AS "id",
+		a.oa_reimburse_id AS "oaReimburse.id",
+		a.target_project AS "targetProject",
+		a.custom AS "custom",
+		a.tar_place AS "tarPlace",
+		a.project_manager AS "projectManager",
+		a.amount AS "amount",
+		a.ticket AS "ticket",
+		a.cause AS "cause",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oaReimburseDetailJoins">
+		LEFT JOIN oa_reimburse b ON b.id = a.oa_reimburse_id
+	</sql>
+    
+	<select id="get" resultType="OaReimburseDetail">
+		SELECT 
+			<include refid="oaReimburseDetailColumns"/>
+		FROM oa_reimburse_detail a
+		<include refid="oaReimburseDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OaReimburseDetail">
+		SELECT 
+			<include refid="oaReimburseDetailColumns"/>
+		FROM oa_reimburse_detail a
+		<include refid="oaReimburseDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="oaReimburse != null and oaReimburse.id != null and oaReimburse.id != ''">
+				AND a.oa_reimburse_id = #{oaReimburse.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OaReimburseDetail">
+		SELECT 
+			<include refid="oaReimburseDetailColumns"/>
+		FROM oa_reimburse_detail a
+		<include refid="oaReimburseDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_reimburse_detail(
+			id,
+			oa_reimburse_id,
+			target_project,
+			custom,
+			tar_place,
+			project_manager,
+			amount,
+			ticket,
+			cause,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{oaReimburse.id},
+			#{targetProject},
+			#{custom},
+			#{tarPlace},
+			#{projectManager},
+			#{amount},
+			#{ticket},
+			#{cause},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_reimburse_detail SET 	
+			oa_reimburse_id = #{oaReimburse.id},
+			target_project = #{targetProject},
+			custom = #{custom},
+			tar_place = #{tarPlace},
+			project_manager = #{projectManager},
+			amount = #{amount},
+			ticket = #{ticket},
+			cause = #{cause},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oa_reimburse_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE oa_reimburse_id = #{oaReimburse.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>
